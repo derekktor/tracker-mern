@@ -32,6 +32,11 @@ const getHabit = (req, res) => {
  * @param {int} res Response object
  */
 const addHabit = (req, res) => {
+  if (!req.body.name) {
+    res.status(400);
+    throw new Error("Please provide name field!")
+  }
+
   res.status(200).json({
     message: "Add habit",
   });
