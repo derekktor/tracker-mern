@@ -1,28 +1,18 @@
 const express = require("express");
 const router = express.Router();
 
-router.get("/", (req, res) => {
-  res.status(200).json({
-    message: "List of habits",
-  });
-});
+const {
+  getHabits,
+  getHabit,
+  addHabit,
+  editHabit,
+  deleteHabit,
+} = require("../controllers/habitController");
 
-router.post("/", (req, res) => {
-  res.status(200).json({
-    message: "Add habit",
-  });
-});
-
-router.put("/:id", (req, res) => {
-  res.status(200).json({
-    message: `Edit habit ${req.params.id}`,
-  });
-});
-
-router.delete("/:id", (req, res) => {
-  res.status(200).json({
-    message: `Delete habit ${req.params.id}`,
-  });
-});
+router.get("/:id", getHabit);
+router.get("/", getHabits);
+router.post("/", addHabit);
+router.put("/:id", editHabit);
+router.delete("/:id", deleteHabit);
 
 module.exports = router;
