@@ -8,8 +8,9 @@ const {
   editHabit,
   deleteHabit,
 } = require("../controllers/habitController");
+const { protect } = require("../middleware/authMiddleware");
 
-router.route("/").get(getHabits).post(addHabit);
-router.route("/:id").get(getHabit).put(editHabit).delete(deleteHabit);
+router.route("/").get(protect, getHabits).post(protect, addHabit);
+router.route("/:id").get(protect, getHabit).put(protect, editHabit).delete(protect, deleteHabit);
 
 module.exports = router;

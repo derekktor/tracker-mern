@@ -1,5 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const Habit = require("../models/habitModel");
+const User = require("../models/userModel");
 
 /**
  * @desc Get habits
@@ -9,7 +10,7 @@ const Habit = require("../models/habitModel");
  * @param {int} res Response object
  */
 const getHabits = asyncHandler(async (req, res) => {
-  const habits = await Habit.find();
+  const habits = await Habit.find({ user: req.user.id });
 
   res.status(200).json(habits);
 });
@@ -42,8 +43,9 @@ const addHabit = asyncHandler(async (req, res) => {
 
   const habit = await Habit.create({
     name: req.body.name,
-    amount: req.body.amount
-  })
+    amount: req.body.amount,
+    user: req.user.id,
+  });
 
   res.status(200).json(habit);
 });
@@ -58,12 +60,28 @@ const addHabit = asyncHandler(async (req, res) => {
 const editHabit = asyncHandler(async (req, res) => {
   const existingHabit = await Habit.findById(req.params.id);
 
+  //   Check if habit exists
   if (!existingHabit) {
     res.status(400);
     throw new Error("No such habit exists!");
   }
 
-  const updatedHabit = await Habit.findByIdAndUpdate(req.params.id, req.body, {new: true});
+  //   Check if user exists
+  const user = await User.findById(req.user.id);
+  if (!user) {
+    res.status(401);
+    throw new Error(`User doesn't exist!`);
+  }
+
+  // Check if user is allowed for the given habit
+  if (existingHabit.user.toString() !== user.id) {
+    res.status(401);
+    throw new Error(`${user.name} is not authorized for this habit!`);
+  }
+
+  const updatedHabit = await Habit.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+  });
 
   res.status(200).json(updatedHabit);
 });
@@ -78,8 +96,23 @@ const editHabit = asyncHandler(async (req, res) => {
 const deleteHabit = asyncHandler(async (req, res) => {
   const habit = await Habit.findById(req.params.id);
 
+  //   Check if habit exists
   if (!habit) {
+    res.status(400);
     throw new Error("No such habit exists!");
+  }
+
+  //   Check if user exists
+  const user = await User.findById(req.user.id);
+  if (!user) {
+    res.status(401);
+    throw new Error(`User doesn't exist!`);
+  }
+
+  // Check if user is allowed for the given habit
+  if (habit.user.toString() !== user.id) {
+    res.status(401);
+    throw new Error(`${user.name} is not authorized for this habit!`);
   }
 
   await habit.remove();
