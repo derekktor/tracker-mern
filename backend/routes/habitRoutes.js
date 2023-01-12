@@ -9,10 +9,7 @@ const {
   deleteHabit,
 } = require("../controllers/habitController");
 
-router.get("/:id", getHabit);
-router.get("/", getHabits);
-router.post("/", addHabit);
-router.put("/:id", editHabit);
-router.delete("/:id", deleteHabit);
+router.route("/").get(getHabits).post(addHabit);
+router.route("/:id").get(getHabit).put(editHabit).delete(deleteHabit);
 
 module.exports = router;
