@@ -45,7 +45,15 @@ const registerUser = asyncHandler(async (req, res) => {
   const user = await User.create({ name, email, password: hashedPassword });
 
   if (user) {
-    res.status(201).json({ _id: user.id, name: user.name, email: user.email, message: `${user.name} was registered successfully` });
+    res
+      .status(201)
+      .json({
+        _id: user.id,
+        name: user.name,
+        email: user.email,
+        message: `${user.name} was registered successfully`,
+        token: generateJWT(user._id)
+      });
   } else {
     res.status(400);
     throw new Error("Invalid data in creating user!");
@@ -78,12 +86,25 @@ const loginUser = asyncHandler(async (req, res) => {
   // Check if password is correct
   const matches = await bcrypt.compare(password, user.password);
   if (matches) {
-    res.status(201).json({ _id: user.id, name: user.name, email: user.email, message: `${user.name} logged in` });
+    res
+      .status(201)
+      .json({
+        _id: user.id,
+        name: user.name,
+        email: user.email,
+        message: `${user.name} logged in`,
+        token: generateJWT(user._id)
+      });
   } else {
     res.status(400);
     throw new Error("Wrong password!");
   }
 });
+
+// Generate JWT
+const generateJWT = (id) => {
+  jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "30d" });
+};
 
 module.exports = {
   getUserInfo,
