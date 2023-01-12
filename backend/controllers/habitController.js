@@ -35,13 +35,14 @@ const getHabit = asyncHandler(async (req, res) => {
  * @param {int} res Response object
  */
 const addHabit = asyncHandler(async (req, res) => {
-  if (!req.body.name) {
+  if (!req.body) {
     res.status(400);
     throw new Error("Please provide name field!");
   }
 
   const habit = await Habit.create({
-    name: req.body.name
+    name: req.body.name,
+    amount: req.body.amount
   })
 
   res.status(200).json(habit);

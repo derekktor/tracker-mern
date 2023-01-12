@@ -28,11 +28,16 @@ const getTask = asyncHandler(async (req, res) => {
 });
 
 /**
- * @desc Creates new task
+ * @desc Create new task
  * @path POST /api/tasks
  * @access Private
  */
 const addTask = asyncHandler(async (req, res) => {
+  if (!req.body.name) {
+    res.status(400);
+    throw new Error("Please provide with a name field!");
+  }
+
   const task = await Task.create(req.body);
 
   res.status(200).json(task);
