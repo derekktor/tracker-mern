@@ -11,7 +11,7 @@ const User = require("../models/userModel");
  * @param {int} res Response object
  */
 const getUserInfo = asyncHandler(async (req, res) => {
-  res.status(200).json({ message: "information of currently logged in user" });
+  res.status(200).json({ name: req.user.name, email: req.user.email });
 });
 
 /**
@@ -52,7 +52,7 @@ const registerUser = asyncHandler(async (req, res) => {
         name: user.name,
         email: user.email,
         message: `${user.name} was registered successfully`,
-        token: generateJWT(user._id)
+        token: generateJWT(user.id)
       });
   } else {
     res.status(400);
@@ -93,7 +93,7 @@ const loginUser = asyncHandler(async (req, res) => {
         name: user.name,
         email: user.email,
         message: `${user.name} logged in`,
-        token: generateJWT(user._id)
+        token: generateJWT(user.id)
       });
   } else {
     res.status(400);
@@ -103,7 +103,7 @@ const loginUser = asyncHandler(async (req, res) => {
 
 // Generate JWT
 const generateJWT = (id) => {
-  jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "30d" });
+  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "30d" });
 };
 
 module.exports = {
