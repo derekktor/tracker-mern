@@ -1,3 +1,5 @@
+const asyncHandler = require("express-async-handler");
+
 /**
  * @desc Get habits
  * @route GET /api/habits
@@ -5,11 +7,11 @@
  * @param {int} req Request object
  * @param {int} res Response object
  */
-const getHabits = (req, res) => {
+const getHabits = asyncHandler(async (req, res) => {
   res.status(200).json({
     message: "List of habits",
   });
-};
+});
 
 /**
  * @desc Get habit
@@ -18,11 +20,11 @@ const getHabits = (req, res) => {
  * @param {int} req Request object
  * @param {int} res Response object
  */
-const getHabit = (req, res) => {
+const getHabit = asyncHandler(async (req, res) => {
   res.status(200).json({
     message: `Single habit ${req.params.id}`,
   });
-};
+});
 
 /**
  * @desc Add habit
@@ -31,16 +33,16 @@ const getHabit = (req, res) => {
  * @param {int} req Request object
  * @param {int} res Response object
  */
-const addHabit = (req, res) => {
+const addHabit = asyncHandler(async (req, res) => {
   if (!req.body.name) {
     res.status(400);
-    throw new Error("Please provide name field!")
+    throw new Error("Please provide name field!");
   }
 
   res.status(200).json({
     message: "Add habit",
   });
-};
+});
 
 /**
  * @desc Edit habit
@@ -49,11 +51,11 @@ const addHabit = (req, res) => {
  * @param {int} req Request object
  * @param {int} res Response object
  */
-const editHabit = (req, res) => {
+const editHabit = asyncHandler(async (req, res) => {
   res.status(200).json({
     message: `Edit habit ${req.params.id}`,
   });
-};
+});
 
 /**
  * @desc Delete habit
@@ -62,16 +64,16 @@ const editHabit = (req, res) => {
  * @param {int} req Request object
  * @param {int} res Response object
  */
-const deleteHabit = (req, res) => {
+const deleteHabit = asyncHandler(async (req, res) => {
   res.status(200).json({
     message: `Delete habit ${req.params.id}`,
   });
-};
+});
 
 module.exports = {
-    getHabits,
-    getHabit,
-    addHabit,
-    editHabit,
-    deleteHabit
-}
+  getHabits,
+  getHabit,
+  addHabit,
+  editHabit,
+  deleteHabit,
+};
