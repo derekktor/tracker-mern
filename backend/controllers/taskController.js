@@ -1,5 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const Task = require("../models/taskModel");
+const User = require("../models/userModel");
 
 /**
  * @desc Fetches list of tasks
@@ -7,7 +8,7 @@ const Task = require("../models/taskModel");
  * @access Private
  */
 const getTasks = asyncHandler(async (req, res) => {
-  const tasks = await Task.find();
+  const tasks = await Task.find({ user: req.user.id });
   res.status(200).json(tasks);
 });
 
@@ -33,12 +34,18 @@ const getTask = asyncHandler(async (req, res) => {
  * @access Private
  */
 const addTask = asyncHandler(async (req, res) => {
+  // Check if req has name field
   if (!req.body.name) {
     res.status(400);
     throw new Error("Please provide with a name field!");
   }
 
-  const task = await Task.create(req.body);
+  // Create and insert task object
+  const task = await Task.create({
+    name: req.body.name,
+    amount: req.body.amount,
+    user: req.user.id,
+  });
 
   res.status(200).json(task);
 });
@@ -51,12 +58,29 @@ const addTask = asyncHandler(async (req, res) => {
 const editTask = asyncHandler(async (req, res) => {
   const task = await Task.findById(req.params.id);
 
+  // Check if task exists in DB
   if (!task) {
     res.status(400);
     throw new Error("Task not found!");
   }
 
-  const newTask = await Task.findByIdAndUpdate(req.params.id, req.body, {new: true});
+  // Check if user exists
+  const user = await User.findById(req.user.id);
+  if (!user) {
+    res.status(400);
+    throw new Error("User doesn't exist in DB!!!");
+  }
+
+  // Check if user is allowed to edit this task
+  if (task.user.toString() !== user.id) {
+    res.status(400);
+    throw new Error(`${user.name} is not allowed to edit this task!!!`);
+  }
+
+  // Update the task in DB
+  const newTask = await Task.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+  });
 
   res.status(200).json(newTask);
 });
@@ -78,5 +102,5 @@ module.exports = {
   getTask,
   addTask,
   editTask,
-  deleteTask
+  deleteTask,
 };
