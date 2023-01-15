@@ -67,14 +67,13 @@ const editHabit = asyncHandler(async (req, res) => {
   }
 
   //   Check if user exists
-  const user = await User.findById(req.user.id);
-  if (!user) {
+  if (!req.user) {
     res.status(401);
     throw new Error(`User doesn't exist!`);
   }
 
   // Check if user is allowed for the given habit
-  if (existingHabit.user.toString() !== user.id) {
+  if (existingHabit.user.toString() !== req.user.id) {
     res.status(401);
     throw new Error(`${user.name} is not authorized for this habit!`);
   }
@@ -103,14 +102,13 @@ const deleteHabit = asyncHandler(async (req, res) => {
   }
 
   //   Check if user exists
-  const user = await User.findById(req.user.id);
-  if (!user) {
+  if (!req.user) {
     res.status(401);
     throw new Error(`User doesn't exist!`);
   }
 
   // Check if user is allowed for the given habit
-  if (habit.user.toString() !== user.id) {
+  if (habit.user.toString() !== req.user.id) {
     res.status(401);
     throw new Error(`${user.name} is not authorized for this habit!`);
   }
