@@ -58,7 +58,7 @@ const HabitForm = () => {
         className="btn btn-primary"
         onClick={handleHabitAdd}
       >
-        Login
+        Submit
       </button>
     </form>
   );

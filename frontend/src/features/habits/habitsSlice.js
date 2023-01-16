@@ -11,7 +11,7 @@ const initialState = {
 
 /**
  * @name createHabit
- * @description creates new habit for a logged in user
+ * @description async thunkl that creates new habit for a logged in user
  */
 export const createHabit = createAsyncThunk(
   "habits/createHabit",
