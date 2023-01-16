@@ -1,14 +1,20 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import habitsService from "./habitsService";
 
-const initialState = [];
+const initialState = {
+  habits: [],
+  isError: false,
+  isSuccess: false,
+  isLoading: false,
+  message: "",
+};
 
 /**
  * @name createHabit
  * @description creates new habit for a logged in user
  */
 export const createHabit = createAsyncThunk(
-  "habits/create",
+  "habits/createHabit",
   async (habitData, thunkAPI) => {
     try {
       const token = thunkAPI.getState().auth.user.token;
@@ -32,6 +38,7 @@ export const fetchHabits = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       const token = thunkAPI.getState().auth.user.token;
+
       return await habitsService.fetchHabits(token);
     } catch (err) {
       const message =
@@ -45,14 +52,14 @@ export const fetchHabits = createAsyncThunk(
 
 /**
  * @name deleteHabit
- * @description fetches a list of habits for a user
+ * @description deletes a habit by its ID
  */
 export const deleteHabit = createAsyncThunk(
-  "habits/fetchHabits",
-  async (_, thunkAPI) => {
+  "habits/deleteHabit",
+  async (habitId, thunkAPI) => {
     try {
       const token = thunkAPI.getState().auth.user.token;
-      return await habitsService.fetchHabits(token);
+      return await habitsService.deleteHabit(habitId, token);
     } catch (err) {
       const message =
         (err.response && err.response.data && err.response.data.message) ||
@@ -71,21 +78,49 @@ const habitsSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-        .addCase(createHabit.pending, (state) => {
-            state.isLoading = true;
-        })
-        .addCase(createHabit.fulfilled, (state, action) => {
-            state.isLoading = false;
-            state.isSuccess = true;
-            state.habits.push(action.payload);
-        })
-        .addCase(createHabit.rejected, (state, action) => {
-            state.isLoading = false;
-            state.isError = false;
-            state.message = action.payload;
-        })
-  }
+      .addCase(createHabit.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(createHabit.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.habits.push(action.payload);
+      })
+      .addCase(createHabit.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.message = action.payload;
+      })
+      .addCase(fetchHabits.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(fetchHabits.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.habits = action.payload;
+      })
+      .addCase(fetchHabits.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+      })
+      .addCase(deleteHabit.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(deleteHabit.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.habits = state.habits.filter(
+          (habit) => habit._id !== action.payload.id
+        );
+      })
+      .addCase(deleteHabit.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+      });
+  },
 });
 
-export const {reset} = habitsSlice.actions;
+export const { reset } = habitsSlice.actions;
 export default habitsSlice.reducer;

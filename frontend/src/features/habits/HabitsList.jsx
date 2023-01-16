@@ -1,30 +1,30 @@
 import React from "react";
 import { useDispatch } from "react-redux";
-import Spinner from "../../components/Spinner";
 import { deleteHabit } from "./habitsSlice";
 
-const HabitsList = ({ habits, isLoading }) => {
+const HabitsList = ({ habits }) => {
   const dispatch = useDispatch();
 
-  const renderedHabits = habits.map((habit) => (
-    <tr key={habit._id}>
-      <td>{habit.name}</td>
-      <td>{habit.amount}</td>
-      <td>{new Date(habit.createdAt).toLocaleString("en-US")}</td>
-      <td>{new Date(habit.updatedAt).toLocaleString("en-US")}</td>
-      <td>
-        <button
-          onClick={() => dispatch(deleteHabit(habit._id))}
-          className="btn btn-outline-danger"
-        >
-          X
-        </button>
-      </td>
-    </tr>
-  ));
-
-  if (isLoading) {
-    return <Spinner />;
+  let content;
+  if (habits.length > 0) {
+    content = habits.map((habit) => (
+      <tr key={habit._id}>
+        <td>{habit.name}</td>
+        <td>{habit.amount}</td>
+        <td>{new Date(habit.createdAt).toLocaleString("en-US")}</td>
+        <td>{new Date(habit.updatedAt).toLocaleString("en-US")}</td>
+        <td>
+          <button
+            onClick={() => dispatch(deleteHabit(habit._id))}
+            className="btn btn-outline-danger"
+          >
+            X
+          </button>
+        </td>
+      </tr>
+    ));
+  } else {
+    content = (<div>You don't have any habit!</div>)
   }
 
   return (
@@ -39,7 +39,7 @@ const HabitsList = ({ habits, isLoading }) => {
             <th>Updated At</th>
           </tr>
         </thead>
-        <tbody>{renderedHabits}</tbody>
+        <tbody>{content}</tbody>
       </table>
     </div>
   );

@@ -4,6 +4,7 @@ import {ToastContainer} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import Header from "./components/Header";
+import HabitsList from "./features/habits/HabitsList";
 import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -17,6 +18,7 @@ function App() {
           <Route path="/" element={<Dashboard />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/habits" element={<HabitsList />} />
         </Routes>
       </Router>
       <ToastContainer />

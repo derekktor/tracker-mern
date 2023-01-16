@@ -31,6 +31,12 @@ const fetchHabits = async (token) => {
   return res.data;
 };
 
+/**
+ * Deletes a habit by its ID while checking whether if the habit belongs the currently logged in user
+ * @param {String} habitId identifier for a habit
+ * @param {String}} token user authentication for a user
+ * @returns habit id
+ */
 const deleteHabit = async (habitId, token) => {
   const config = {
     headers: {
@@ -45,7 +51,7 @@ const deleteHabit = async (habitId, token) => {
 const habitsService = {
   fetchHabits,
   createHabit,
-  deleteHabit
+  deleteHabit,
 };
 
 export default habitsService;
