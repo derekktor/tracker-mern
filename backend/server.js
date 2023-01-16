@@ -19,10 +19,14 @@ app.use("/api/users", require("./routes/userRoutes"));
 
 // serve frontend
 if (process.env.NODE_ENV === "production") {
-    app.use(express.static(path.join(__dirname, "../frontend/build")))
+    const staticPath = path.join(__dirname, "../frontend/build")
+    console.log(staticPath);
+    app.use(express.static(staticPath));
 
+    const filePath = path.resolve(__dirname, "../", "frontend", "build", "index.html");
+    console.log(filePath);
     app.get("*", (req, res) => {
-        res.sendFile(path.resolve(__dirname, "../", "frontend", "build", "index.html"));
+        res.sendFile(filePath);
     })
 } else {
     app.get("/", (req, res) => {
