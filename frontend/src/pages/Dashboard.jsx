@@ -39,7 +39,9 @@ const Dashboard = () => {
   return (
     <div>
       {user && <h1>Hello, {user.name}</h1>}
+      <hr className="border border-primary border-3 opacity-50" />
       <HabitForm />
+      <hr className="border border-primary border-3 opacity-50" />
       <HabitsList habits={habits}/>
     </div>
   );
