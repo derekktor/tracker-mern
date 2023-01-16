@@ -12,7 +12,10 @@ const initialState = {
   message: "",
 };
 
-// register thunk
+/**
+ * @name Register
+ * @description async thunk that creates a new user or returns any error message
+ */
 export const register = createAsyncThunk(
   "auth/register",
   async (user, thunkAPI) => {
@@ -28,7 +31,10 @@ export const register = createAsyncThunk(
   }
 )
 
-// login thunk
+/**
+ * @name Login
+ * @description async thunk that searches for an account and matches the password provided
+ */
 export const login = createAsyncThunk(
   "auth/login",
   async (user, thunkAPI) => {
@@ -44,6 +50,10 @@ export const login = createAsyncThunk(
   }
 );;
 
+/**
+ * @name logout
+ * @description deletes any existing user-specific token from localStorage
+ */
 export const logout = createAsyncThunk("auth/logout", async () => {
   await authService.logout();
 });
