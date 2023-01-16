@@ -1,14 +1,19 @@
-import React from 'react'
-import { useSelector } from 'react-redux'
+import React from "react";
+import { useEffect } from "react";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
-  const user = useSelector(state => state.auth.user)
+  const navigate = useNavigate();
+  const user = useSelector((state) => state.auth.user);
 
-  return (
-    <div>
-      {user && <h1>Hello, {user.name}</h1>}
-    </div>
-  )
-}
+  useEffect(() => {
+    if (!user) {
+      navigate("/login");
+    }
+  }, [navigate, user]);
 
-export default Dashboard
+  return <div>{user && <h1>Hello, {user.name}</h1>}</div>;
+};
+
+export default Dashboard;
